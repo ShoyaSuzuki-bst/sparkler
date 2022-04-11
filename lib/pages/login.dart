@@ -117,7 +117,7 @@ class _LoginState extends State<Login> {
         password: _password,
       )).user;
       if (user != null) {
-        await user.updateDisplayName('匿名さん');
+        await user.updateDisplayName('ひよこ${user.uid}');
         saveAccountData();
         Navigator.pop(context);
         await Navigator.of(context).pushReplacement(
