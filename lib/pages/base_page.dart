@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:sparkler/pages/home.dart';
 import 'package:sparkler/pages/user_page.dart';
 
 class BasePage extends StatefulWidget {
+  BasePage({
+    Key? key,
+    required this.currentUser,
+  }) : super(key: key);
+
+  final User currentUser;
+
   @override
   _BasePageState createState() => _BasePageState();
 }
@@ -45,9 +54,11 @@ class _BasePageState extends State<BasePage> {
               _title = _titleList[index];
             });
           },
-          children: const [
-            Home(),
-            UserPage(),
+          children: [
+            const Home(),
+            UserPage(
+              currentUser: widget.currentUser,
+            ),
           ]
         ),
         bottomNavigationBar: Column(
