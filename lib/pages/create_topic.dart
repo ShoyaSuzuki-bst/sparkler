@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'show_topic.dart';
 
@@ -13,14 +14,18 @@ class CreateTopic extends StatefulWidget {
 class _CreateTopicState extends State<CreateTopic> {
   String _title = '';
   String _content = '';
+  bool _isActive = true;
 
   void _create() async {
+    setState(() {
+      _isActive = false;
+    });
     await FirebaseFirestore.instance
         .collection('topics')
         .add({
           'title': _title,
           'content': _content,
-          'createUser': '後で実装して',
+          'createUser': FirebaseAuth.instance.currentUser!.uid,
           'createdAt': DateTime.now(),
         });
     await Navigator.of(context).pushReplacement(
@@ -73,7 +78,7 @@ class _CreateTopicState extends State<CreateTopic> {
                 ),
                 ElevatedButton(
                   child: const Text('保存'),
-                  onPressed: _create,
+                  onPressed: _isActive ?_create : null,
                 ),
               ],
             ),
