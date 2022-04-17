@@ -5,7 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'show_topic.dart';
 
 class CreateTopic extends StatefulWidget {
-  const CreateTopic({ Key? key }) : super(key: key);
+  const CreateTopic({
+    Key? key,
+    required this.fetchTopics,
+  }) : super(key: key);
+
+  final fetchTopics;
 
   @override
   State<CreateTopic> createState() => _CreateTopicState();
@@ -28,6 +33,7 @@ class _CreateTopicState extends State<CreateTopic> {
           'createUser': FirebaseAuth.instance.currentUser!.uid,
           'createdAt': DateTime.now(),
         });
+    widget.fetchTopics();
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) {
         return ShowTopic(
