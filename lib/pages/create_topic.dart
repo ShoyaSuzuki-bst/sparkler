@@ -25,7 +25,7 @@ class _CreateTopicState extends State<CreateTopic> {
     setState(() {
       _isActive = false;
     });
-    await FirebaseFirestore.instance
+    final topicRef = await FirebaseFirestore.instance
         .collection('topics')
         .add({
           'title': _title,
@@ -33,12 +33,13 @@ class _CreateTopicState extends State<CreateTopic> {
           'createUser': FirebaseAuth.instance.currentUser!.uid,
           'createdAt': DateTime.now(),
         });
+    final snapshot = await topicRef.get();
+    final topic = snapshot.data()!;
     widget.fetchTopics();
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) {
         return ShowTopic(
-          title: _title,
-          content: _content,
+          topic: topic,
         );
       }),
     );

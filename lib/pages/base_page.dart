@@ -22,26 +22,25 @@ class BasePage extends StatefulWidget {
 }
 
 class _BasePageState extends State<BasePage> {
-  List _topics = [];
+  List<Map<String, dynamic>> _topics = [];
   final firestore = FirebaseFirestore.instance;
 
-  Future<List> _fetchTopics() async {
-    print('_fetchTopics start');
+  Future<List<Map<String, dynamic>>> _fetchTopics() async {
     final snapshot = await firestore.collection('topics').get();
-    for(var topic in snapshot.docs){
-      print(topic['title']);
-    }
-    return snapshot.docs;
+    final List<Map<String, dynamic>> docs = snapshot.docs.map(
+      (doc) => doc.data(),
+    ).toList();
+    return docs;
   }
 
-@override
-void didChangeDependencies() async {
-  super.didChangeDependencies();
-  final topics = await _fetchTopics();
-  setState(() {
-    _topics = topics;
-  });
-}
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    final topics = await _fetchTopics();
+    setState(() {
+      _topics = topics;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +75,7 @@ void didChangeDependencies() async {
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) {
-                  return ShowTopic(title: _topics[index]['title'], content: _topics[index]['content']);
+                  return ShowTopic(topic: _topics[index]);
                 }),
               );
             },
