@@ -34,12 +34,15 @@ class _CreateTopicState extends State<CreateTopic> {
           'createdAt': DateTime.now(),
         });
     final snapshot = await topicRef.get();
-    final topic = snapshot.data()!;
+    final topicId = snapshot.id;
+    var topic = snapshot.data()!;
+    topic['id'] = topicId;
     widget.fetchTopics();
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) {
         return ShowTopic(
           topic: topic,
+          fetchTopics: widget.fetchTopics,
         );
       }),
     );

@@ -27,9 +27,12 @@ class _BasePageState extends State<BasePage> {
 
   Future<List<Map<String, dynamic>>> _fetchTopics() async {
     final snapshot = await firestore.collection('topics').get();
-    final List<Map<String, dynamic>> docs = snapshot.docs.map(
-      (doc) => doc.data(),
-    ).toList();
+    final List<Map<String, dynamic>> docs = snapshot.docs.map((doc) {
+      final docId = doc.id;
+      var docData = doc.data();
+      docData['id'] = docId;
+      return docData;
+    }).toList();
     return docs;
   }
 
@@ -63,7 +66,6 @@ class _BasePageState extends State<BasePage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            print('refresh start');
             final topics = await _fetchTopics();
             setState(() {
               _topics = topics;
@@ -75,7 +77,7 @@ class _BasePageState extends State<BasePage> {
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) {
-                  return ShowTopic(topic: _topics[index]);
+                  return ShowTopic(topic: _topics[index], fetchTopics: _fetchTopics);
                 }),
               );
             },
