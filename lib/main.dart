@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:sparkler/pages/entry.dart';
+import 'package:sparkler/pages/base_page.dart';
+import 'package:sparkler/pages/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +20,31 @@ class MyApp extends StatelessWidget {
       title: 'Sparkler',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: const Entry(),
+
+      // ログインしているかどうかではじめに表示する画面を切り替える。
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text('Loading...')
+                  ],
+                ),
+              ),
+            );
+          }
+
+          if (snapshot.hasData) {
+            final User user = FirebaseAuth.instance.currentUser!;
+            return BasePage(currentUser: user);
+          }
+          return const Login();
+        },
+      ),
     );
   }
 }

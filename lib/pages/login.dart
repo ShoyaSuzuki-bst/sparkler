@@ -34,8 +34,8 @@ class _LoginState extends State<Login> {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      transitionDuration: Duration(milliseconds: 250), // ダイアログフェードインmsec
-      barrierColor: Colors.black.withOpacity(0.5), // 画面マスクの透明度
+      transitionDuration: const Duration(milliseconds: 250),
+      barrierColor: Colors.black.withOpacity(0.5),
       pageBuilder: (BuildContext context, Animation animation,
           Animation secondaryAnimation) {
         return const Center(
