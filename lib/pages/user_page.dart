@@ -26,7 +26,7 @@ class UserPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(currentUser.displayName ?? ''),
-            Text(currentUser.email ?? ''),
+            Text(currentUser.phoneNumber ?? ''),
             Padding(
               padding: const EdgeInsets.only(top: 100),
               child: TextButton(
