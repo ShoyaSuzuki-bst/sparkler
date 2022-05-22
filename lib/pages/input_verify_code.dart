@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:sparkler/models/user.dart' as UserModel;
+import 'package:sparkler/models/user.dart' as um;
 
 import 'base_page.dart';
 
@@ -29,15 +29,16 @@ class _InputVerifyCodeState extends State<InputVerifyCode> {
     );
     final userCredential = await FirebaseAuth.instance.signInWithCredential(_credential);
     final user = userCredential.user!;
-    if (!(await UserModel.User.exists(user.uid))) {
+    if (!(await um.User.exists(user.uid))) {
       final createTimestamp = Timestamp.fromDate(DateTime.now());
       await user.updateDisplayName("匿名さん${createTimestamp.seconds}");
-      UserModel.User.create(user.uid, user.displayName!, user.phoneNumber!);
+      um.User.create(user.uid, user.displayName!, user.phoneNumber!);
     }
+    final UserModel = um.User.transModelFromAuth(user);
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) {
         return BasePage(
-          currentUser: user,
+          currentUser: UserModel,
         );
       }),
     );

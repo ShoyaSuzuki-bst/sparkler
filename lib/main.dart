@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:sparkler/models/user.dart' as um;
+
 import 'package:sparkler/pages/base_page.dart';
 import 'package:sparkler/pages/login.dart';
 
@@ -39,7 +41,7 @@ class MyApp extends StatelessWidget {
           }
 
           if (snapshot.hasData) {
-            final User user = FirebaseAuth.instance.currentUser!;
+            final um.User user = um.User.getCurrentUser();
             return BasePage(currentUser: user);
           }
           return const Login();

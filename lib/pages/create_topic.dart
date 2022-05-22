@@ -1,48 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sparkler/models/topic.dart';
 
-import 'show_topic.dart';
+import 'package:sparkler/models/user.dart';
+import 'package:sparkler/models/topic.dart';
+
+import 'chat.dart';
 
 class CreateTopic extends StatefulWidget {
   const CreateTopic({
     Key? key,
     required this.fetchTopics,
+    required this.currentUser,
   }) : super(key: key);
 
-  final fetchTopics;
+  final Function fetchTopics;
+  final User currentUser;
 
   @override
   State<CreateTopic> createState() => _CreateTopicState();
 }
 
 class _CreateTopicState extends State<CreateTopic> {
-  String _title = '';
-  String _content = '';
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _firstMessageController = TextEditingController();
   bool _isActive = true;
+  final FirebaseFirestore store = FirebaseFirestore.instance;
 
   void _create() async {
+    print('push 保存');
     setState(() {
       _isActive = false;
     });
-    final topicRef = await FirebaseFirestore.instance
-        .collection('topics')
-        .add({
-          'title': _title,
-          'content': _content,
-          'createUser': FirebaseAuth.instance.currentUser!.uid,
-          'createdAt': DateTime.now(),
-        });
-    final snapshot = await topicRef.get();
-    final topicId = snapshot.id;
-    var topic = snapshot.data()!;
-    topic['id'] = topicId;
+    final topic = await Topic.create(
+      _titleController.text,
+      _firstMessageController.text,
+    );
     widget.fetchTopics();
-    await Navigator.of(context).pushReplacement(
+    await Navigator.of(context).push(
       MaterialPageRoute(builder: (context) {
-        return ShowTopic(
+        return Chat(
           topic: topic,
-          fetchTopics: widget.fetchTopics,
+          currentUser: widget.currentUser,
         );
       }),
     );
@@ -67,23 +66,15 @@ class _CreateTopicState extends State<CreateTopic> {
             child: Column(
               children: [
                 TextField(
-                  onChanged: (String v) {
-                    setState(() {
-                      _title = v;
-                    });
-                  },
+                  controller: _titleController,
                   decoration: const InputDecoration(
                     labelText: "トピックタイトル",
                   ),
                 ),
                 TextField(
-                  onChanged: (String v) {
-                    setState(() {
-                      _content = v;
-                    });
-                  },
+                  controller: _firstMessageController,
                   decoration: const InputDecoration(
-                    labelText: "内容",
+                    labelText: "ファーストメッセージ",
                   ),
                 ),
                 ElevatedButton(

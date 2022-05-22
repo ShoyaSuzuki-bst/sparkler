@@ -3,13 +3,19 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:sparkler/models/message.dart';
+import 'package:sparkler/models/topic.dart';
+import 'package:sparkler/models/user.dart' as um;
+
 class Chat extends StatefulWidget {
   Chat({
     Key? key,
     required this.topic,
+    required this.currentUser,
   }) : super(key: key);
 
-  Map<String, dynamic> topic;
+  final Topic topic;
+  final um.User currentUser;
 
   @override
   State<Chat> createState() => _ChatState();
@@ -17,12 +23,19 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> {
   final _controller = TextEditingController();
+  final FirebaseFirestore store = FirebaseFirestore.instance;
 
-  Widget buildTaskList() {
+  Color? messageBackColor(BuildContext context, String uid) {
+    final Brightness brightness = MediaQuery.platformBrightnessOf(context);
+    final Color color = brightness == Brightness.light ? Colors.yellow[100]! : Colors.cyan[900]!;
+    return uid == widget.currentUser.uid ? color : null;
+  }
+
+  Widget buildTaskList(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
+      stream: store
         .collection('topics')
-        .doc(widget.topic['id'])
+        .doc(widget.topic.id)
         .collection('messages')
         .orderBy('createdAt')
         .snapshots(),
@@ -47,10 +60,11 @@ class _ChatState extends State<Chat> {
                 children: <Widget> [
                   Row(
                     children: <Widget> [
-                      Text('匿名さん'),
+                      Text(data['userName']),
                     ],
                   ),
                   Card(
+                    color: messageBackColor(context, data['userReference'].id),
                     child: ListTile(
                       title: Text(data['message']),
                       subtitle: Text(DateFormat('MM/dd hh:mm').format(data['createdAt'].toDate())),
@@ -65,16 +79,19 @@ class _ChatState extends State<Chat> {
     );
   }
 
-  void _sendMessage() async {
-    await FirebaseFirestore.instance
-      .collection('topics')
-      .doc(widget.topic['id'])
-      .collection('messages')
-      .add({
-        'message': _controller.text,
-        'createUser': FirebaseAuth.instance.currentUser!.uid,
-        'createdAt': DateTime.now(),
-      });
+  void _sendButtonHandler() {
+    final message = Message(
+      _controller.text,
+      widget.currentUser.name,
+      widget.currentUser,
+      Topic(
+        widget.topic.id,
+        widget.topic.title,
+        widget.currentUser,
+      ),
+    );
+    message.sendMessage();
+    _controller.clear();
   }
 
   @override
@@ -88,13 +105,13 @@ class _ChatState extends State<Chat> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.topic['title']),
+          title: Text(widget.topic.title),
         ),
         body: SafeArea(
           child: Column(
             children: <Widget>[
               Flexible(
-                child: buildTaskList(),
+                child: buildTaskList(context),
               ),
               Container(
                 padding: const EdgeInsets.only(left: 30, right: 10),
@@ -115,11 +132,8 @@ class _ChatState extends State<Chat> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () async {
-                        print('送信');
-                        print(_controller.text);
-                        _sendMessage();
-                        _controller.clear();
+                      onPressed: () {
+                        _sendButtonHandler();
                       },
                       icon: const Icon(Icons.send),
                       color: Theme.of(context).primaryColor,

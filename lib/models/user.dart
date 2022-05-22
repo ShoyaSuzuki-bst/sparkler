@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 
 class User {
+  final FirebaseFirestore store = FirebaseFirestore.instance;
   String uid = '';
   String name = '';
   String phoneNumber = '';
-  final FirebaseFirestore store = FirebaseFirestore.instance;
 
   User(
-    String uid,
-    String name,
-    String phoneNumber
+    this.uid,
+    this.name,
+    this.phoneNumber
   );
 
   static User create(String _uid, String _name, String _phoneNumber) {
@@ -36,13 +37,43 @@ class User {
     );
   }
 
-
-
-  User update(String _uid, String _name, String _phoneNumber) {
+  static User transModelFromAuth(fb.User fbUser) {
     return User(
-      "sample",
-      "sample",
-      "sample",
+      fbUser.uid,
+      fbUser.displayName!,
+      fbUser.phoneNumber!,
+    );
+  }
+
+  static Future<User> transModelFromRef(DocumentReference<Map<String, dynamic>> ref) async {
+    final DocumentSnapshot<Map<String, dynamic>> snapshot = await ref.get();
+    final Map map = snapshot.data()!;
+    return User(
+      snapshot.id,
+      map['name'],
+      map['phoneNumber'],
+    );
+  }
+
+  static User getCurrentUser() {
+    final fb.User fbUser = fb.FirebaseAuth.instance.currentUser!;
+    final String uid = fbUser.uid;
+    print('uid : $uid');
+    final User currentUser = User(
+      uid,
+      fbUser.displayName!,
+      fbUser.phoneNumber!,
+    );
+    print('currentUser.name: ${currentUser.name}');
+    return currentUser;
+  }
+
+  static Future<User> refToInst(DocumentReference ref) async {
+    final snapshot = await ref.get();
+    return User(
+      snapshot.id,
+      snapshot['name'],
+      snapshot['phoneNumber'],
     );
   }
 
@@ -56,5 +87,19 @@ class User {
     } catch (e) {
       throw e;
     }
+  }
+
+  User update(String _uid, String _name, String _phoneNumber) {
+    return User(
+      "sample",
+      "sample",
+      "sample",
+    );
+  }
+
+  DocumentReference<Map<String, dynamic>> getRef() {
+   return store
+      .collection('users')
+      .doc(uid);
   }
 }
