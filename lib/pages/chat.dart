@@ -84,11 +84,7 @@ class _ChatState extends State<Chat> {
       _controller.text,
       widget.currentUser.name,
       widget.currentUser,
-      Topic(
-        widget.topic.id,
-        widget.topic.title,
-        widget.currentUser,
-      ),
+      widget.topic,
     );
     message.sendMessage();
     _controller.clear();

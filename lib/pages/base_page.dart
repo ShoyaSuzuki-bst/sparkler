@@ -62,7 +62,7 @@ class _BasePageState extends State<BasePage> {
           },
           child: ListView.separated(
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(
+          return GestureDetector(
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) {
@@ -73,10 +73,39 @@ class _BasePageState extends State<BasePage> {
                 }),
               );
             },
-            title: Flexible(
-              child: Text(
-                _topics[index].title,
-                overflow: TextOverflow.ellipsis,
+            child: Card(
+              child: Column(
+                children: <Widget> [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 150,
+                    child: FittedBox(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5, right: 5),
+                        child: Text(
+                          _topics[index].title,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget> [
+                        Text(
+                          'あと${_topics[index].createdAt.add(const Duration(days: 7)).difference(DateTime.now()).inDays}日',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          '作成者：${_topics[index].user.name}',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
           );

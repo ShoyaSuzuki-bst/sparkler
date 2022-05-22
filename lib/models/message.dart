@@ -14,6 +14,7 @@ class Message {
   Topic topic = Topic(
     '',
     '',
+    DateTime(1),
     User(
       '',
       '',

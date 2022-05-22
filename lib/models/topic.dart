@@ -16,6 +16,7 @@ class Topic {
   Topic(
     this.id,
     this.title,
+    this.createdAt,
     this.user,
   );
 
@@ -32,11 +33,12 @@ class Topic {
         'createdAt': FieldValue.serverTimestamp(),
         'isActive': true,
       });
-    
+    final topicData = await topicRef.get();
     final snapshot = await topicRef.get();
     final Topic topic = Topic(
       snapshot.id,
       title,
+      topicData['createdAt'].toDate(),
       currentUser,
     );
     final Message firstMessage = Message(
@@ -64,6 +66,7 @@ class Topic {
         Topic(
           docId,
           docData['title'],
+          docData['createdAt'].toDate(),
           await User.transModelFromRef(userRef),
         )
       );
@@ -75,6 +78,7 @@ class Topic {
     return Topic(
       "",
       "",
+      DateTime(1),
       User(
         '',
         '',
@@ -87,6 +91,7 @@ class Topic {
     return Topic(
       "",
       "",
+      DateTime(1),
       User(
         '',
         '',
