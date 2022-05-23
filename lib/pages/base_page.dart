@@ -95,7 +95,7 @@ class _BasePageState extends State<BasePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget> [
                         Text(
-                          'あと${_topics[index].createdAt.add(const Duration(days: 7)).difference(DateTime.now()).inDays}日',
+                          'あと${_topics[index].createdAt.add(const Duration(days: 1)).difference(DateTime.now()).inHours}時間',
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
