@@ -4,6 +4,7 @@ import 'package:sparkler/models/topic.dart';
 
 import 'package:sparkler/models/user.dart';
 import 'package:sparkler/models/topic.dart';
+import 'package:sparkler/parts/adaptive_banner.dart';
 
 import 'chat.dart';
 import 'create_topic.dart';
@@ -162,6 +163,7 @@ class _BasePageState extends State<BasePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
+      bottomNavigationBar: const AdaptiveAdBanner(),
     );
   }
 }
