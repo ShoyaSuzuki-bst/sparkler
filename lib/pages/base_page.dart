@@ -44,7 +44,7 @@ class _BasePageState extends State<BasePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ホーム'),
-        foregroundColor: Colors.grey.shade700,
+        foregroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.grey.shade700 : null,
         backgroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.white : null,
         elevation: 0,
         bottom: PreferredSize(
@@ -60,7 +60,9 @@ class _BasePageState extends State<BasePage> {
             onPressed: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) {
-                  return UserPage();
+                  return UserPage(
+                    currentUser: widget.currentUser,
+                  );
                 }),
               );
             },

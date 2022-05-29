@@ -60,7 +60,7 @@ class _CreateTopicState extends State<CreateTopic> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('トピック作成'),
-          foregroundColor: Colors.grey.shade700,
+          foregroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.grey.shade700 : null,
           backgroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.white : null,
           elevation: 0,
           bottom: PreferredSize(

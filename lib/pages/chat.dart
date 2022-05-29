@@ -102,7 +102,7 @@ class _ChatState extends State<Chat> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.topic.title),
-          foregroundColor: Colors.grey.shade700,
+          foregroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.grey.shade700 : null,
           backgroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.white : null,
           elevation: 0,
           bottom: PreferredSize(

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 
 class User {
+  final fb.FirebaseAuth auth = fb.FirebaseAuth.instance;
   final FirebaseFirestore store = FirebaseFirestore.instance;
   String uid = '';
   String name = '';
@@ -94,6 +95,20 @@ class User {
       "sample",
       "sample",
       "sample",
+    );
+  }
+
+  void logout() async {
+    await auth.signOut();
+  }
+
+  Future<User> updateDisplayName(String _name) async {
+    await auth.currentUser!.updateDisplayName(_name);
+    await store.collection('users').doc(uid).update({'name': _name});
+    return User(
+      uid,
+      _name,
+      phoneNumber,
     );
   }
 

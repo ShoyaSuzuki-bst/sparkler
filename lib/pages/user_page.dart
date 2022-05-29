@@ -1,18 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'login.dart';
+import 'package:sparkler/models/user.dart';
 
-class UserPage extends StatelessWidget {
-  final User currentUser = FirebaseAuth.instance.currentUser!;
-    final _storage = const FlutterSecureStorage();
+import 'login.dart';
+import 'edit_user_name.dart';
+
+class UserPage extends StatefulWidget {
+  UserPage({
+    Key? key,
+    required this.currentUser,
+  }) : super(key: key);
+
+  final User currentUser;
+
+  @override
+  _UserPageState createState() => _UserPageState();
+}
+
+class _UserPageState extends State<UserPage> {
+  final _storage = const FlutterSecureStorage();
 
   void _logout(context) async {
-    await FirebaseAuth.instance.signOut();
+    widget.currentUser.logout();
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) {
         return const Login();
+      }),
+    );
+  }
+
+  void _editUserName() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) {
+        return EditUserName(
+          currentUser: widget.currentUser,
+        );
       }),
     );
   }
@@ -22,7 +45,7 @@ class UserPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ユーザーページ'),
-        foregroundColor: Colors.grey.shade700,
+        foregroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.grey.shade700 : null,
         backgroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.white : null,
         elevation: 0,
         bottom: PreferredSize(
@@ -33,25 +56,27 @@ class UserPage extends StatelessWidget {
           preferredSize: const Size.fromHeight(5)
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(currentUser.displayName ?? ''),
-            Text(currentUser.phoneNumber ?? ''),
-            Padding(
-              padding: const EdgeInsets.only(top: 100),
-              child: TextButton(
-                onPressed: () {
-                  _logout(context);
-                },
-                child: const Text(
-                  'ログアウト'
-                ),
-              ),
-            )
-          ],
-        ),
+      body: ListView(
+        children: <Widget> [
+          ListTile(
+            title: const Text('名前'),
+            subtitle: Text(widget.currentUser.name),
+            trailing: const Icon(Icons.arrow_forward_ios),
+            onTap: () {
+              _editUserName();
+            },
+          ),
+          ListTile(
+            title: const Text('電話番号'),
+            subtitle: Text(widget.currentUser.phoneNumber),
+          ),
+          TextButton(
+            child: const Text('ログアウト'),
+            onPressed: () {
+              widget.currentUser.logout();
+            },
+          ),
+        ],
       ),
     );
   }
