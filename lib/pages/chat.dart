@@ -102,6 +102,16 @@ class _ChatState extends State<Chat> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.topic.title),
+          foregroundColor: Colors.grey.shade700,
+          backgroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.white : null,
+          elevation: 0,
+          bottom: PreferredSize(
+            child: Container(
+              color: Colors.grey.shade600,
+              height: 0.5,
+            ),
+            preferredSize: const Size.fromHeight(5)
+          ),
         ),
         body: SafeArea(
           child: Column(

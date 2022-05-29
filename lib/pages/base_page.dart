@@ -28,7 +28,12 @@ class _BasePageState extends State<BasePage> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
+    refreshHandler();
+  }
+
+  void refreshHandler() async {
     final topics = await Topic.fetch();
+    topics.sort((a, b) => b.createdAt.millisecondsSinceEpoch.compareTo(a.createdAt.millisecondsSinceEpoch));
     setState(() {
       _topics = topics;
     });
@@ -39,6 +44,16 @@ class _BasePageState extends State<BasePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ホーム'),
+        foregroundColor: Colors.grey.shade700,
+        backgroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.white : null,
+        elevation: 0,
+        bottom: PreferredSize(
+          child: Container(
+            color: Colors.grey.shade600,
+            height: 0.5,
+          ),
+          preferredSize: const Size.fromHeight(5)
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.person),
@@ -55,10 +70,7 @@ class _BasePageState extends State<BasePage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            final topics = await Topic.fetch();
-            setState(() {
-              _topics = topics;
-            });
+            refreshHandler();
           },
           child: ListView.separated(
         itemBuilder: (BuildContext context, int index) {
@@ -76,7 +88,21 @@ class _BasePageState extends State<BasePage> {
             child: Card(
               child: Column(
                 children: <Widget> [
-                  SizedBox(
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: FractionalOffset.topCenter,
+                        end: FractionalOffset.bottomCenter,
+                        colors: [
+                          const Color(0x006a11cb).withOpacity(0.6),
+                          const Color(0x002575fc).withOpacity(0.6),
+                        ],
+                        stops: const [
+                          0.0,
+                          1.0,
+                        ],
+                      ),
+                    ),
                     width: double.infinity,
                     height: 150,
                     child: FittedBox(
@@ -85,6 +111,9 @@ class _BasePageState extends State<BasePage> {
                         child: Text(
                           _topics[index].title,
                           overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),

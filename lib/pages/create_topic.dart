@@ -25,6 +25,7 @@ class _CreateTopicState extends State<CreateTopic> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _firstMessageController = TextEditingController();
   bool _isActive = true;
+  String _titleCounter = '0/17';
   final FirebaseFirestore store = FirebaseFirestore.instance;
 
   void _create() async {
@@ -37,7 +38,7 @@ class _CreateTopicState extends State<CreateTopic> {
       _firstMessageController.text,
     );
     widget.fetchTopics();
-    await Navigator.of(context).push(
+    await Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) {
         return Chat(
           topic: topic,
@@ -59,29 +60,62 @@ class _CreateTopicState extends State<CreateTopic> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('トピック作成'),
+          foregroundColor: Colors.grey.shade700,
+          backgroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.white : null,
+          elevation: 0,
+          bottom: PreferredSize(
+            child: Container(
+              color: Colors.grey.shade600,
+              height: 0.5,
+            ),
+            preferredSize: const Size.fromHeight(5)
+          ),
         ),
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(30),
-            child: Column(
-              children: [
-                TextField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(
-                    labelText: "トピックタイトル",
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      counterText: _titleCounter,
+                      counterStyle: TextStyle(
+                        color: _titleController.text.length > 17 ? Colors.red : null,
+                      ),
+                      contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 30),
+                      border: const OutlineInputBorder(),
+                      labelText: "トピックタイトル",
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 3,
+                    onChanged: (_) {
+                      setState(() {
+                        _titleCounter = '${_titleController.text.length}/17';
+                        _isActive = _titleController.text.length <= 17;
+                      });
+                    },
                   ),
-                ),
-                TextField(
-                  controller: _firstMessageController,
-                  decoration: const InputDecoration(
-                    labelText: "ファーストメッセージ",
+                  const Padding(padding: EdgeInsets.all(15)),
+                  TextField(
+                    controller: _firstMessageController,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.only(left: 10, right: 10, top: 30),
+                      border: OutlineInputBorder(),
+                      labelText: "ファーストメッセージ",
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 10,
                   ),
-                ),
-                ElevatedButton(
-                  child: const Text('保存'),
-                  onPressed: _isActive ?_create : null,
-                ),
-              ],
+                  ElevatedButton(
+                    child: const Text('保存'),
+                    onPressed: _isActive ? _create : null,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

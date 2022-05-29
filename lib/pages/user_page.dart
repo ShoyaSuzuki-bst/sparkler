@@ -20,7 +20,19 @@ class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('ユーザーページ'),
+        foregroundColor: Colors.grey.shade700,
+        backgroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.white : null,
+        elevation: 0,
+        bottom: PreferredSize(
+          child: Container(
+            color: Colors.grey.shade600,
+            height: 0.5,
+          ),
+          preferredSize: const Size.fromHeight(5)
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
