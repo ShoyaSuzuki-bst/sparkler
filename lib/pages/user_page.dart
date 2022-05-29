@@ -72,8 +72,13 @@ class _UserPageState extends State<UserPage> {
           ),
           TextButton(
             child: const Text('ログアウト'),
-            onPressed: () {
+            onPressed: () async {
               widget.currentUser.logout();
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) {
+                  return const Login();
+                }),
+              );
             },
           ),
         ],
