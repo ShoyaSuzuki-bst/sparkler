@@ -43,7 +43,6 @@ class _EditUserNameState extends State<EditUserName> {
         _counterText = '${_nameController.text.length}/15';
       });
     }
-
   }
 
   @override

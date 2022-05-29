@@ -21,8 +21,24 @@ class InputVerifyCode extends StatefulWidget {
 class _InputVerifyCodeState extends State<InputVerifyCode> {
   final _valueController = TextEditingController();
   final store = FirebaseFirestore.instance;
+  bool _isActive = false;
+
+  void _nameValidation() {
+    if (_valueController.text.isEmpty || _valueController.text.length > 6) {
+      setState(() {
+        _isActive = false;
+      });
+    }else{
+      setState(() {
+        _isActive = true;
+      });
+    }
+  }
 
   void _submitButtonHandler() async {
+    setState(() {
+      _isActive = false;
+    });
     AuthCredential _credential = PhoneAuthProvider.credential(
       verificationId: widget.verifyId,
       smsCode: _valueController.text
@@ -51,65 +67,62 @@ class _InputVerifyCodeState extends State<InputVerifyCode> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        appBar: AppBar(
+          foregroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.grey.shade700 : null,
+          backgroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.white : null,
+          elevation: 0,
+          bottom: PreferredSize(
+            child: Container(
+              color: Colors.grey.shade600,
+              height: 0.5,
+            ),
+            preferredSize: const Size.fromHeight(5)
+          ),
+        ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Column(
-                children: <Widget> [
-                  const Text(
-                    'ようこそ',
-                    style: TextStyle(
-                      fontSize: 25,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                TextFormField(
+                  controller: _valueController,
+                  keyboardType: TextInputType.phone,
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                  decoration: InputDecoration(
+                    counterText: '${_valueController.text.length}/6',
+                    counterStyle: TextStyle(
+                      color: _valueController.text.length > 6 ? Colors.red : null,
+                    ),
+                    labelText: "確認コード",
+                    labelStyle: const TextStyle(
+                      fontSize: 20,
+                    ),
+                    enabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(),
                     ),
                   ),
-                  const SizedBox(
-                    height: 50,
+                  onChanged: (_) {
+                    _nameValidation();
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    child: const Text('確認'),
+                    onPressed: _isActive ? _submitButtonHandler : null,
                   ),
-                  SizedBox(
-                    width: 300,
-                    child: Column(
-                      children: <Widget> [
-                        TextFormField(
-                          controller: _valueController,
-                          keyboardType: TextInputType.phone,
-                          style: const TextStyle(
-                            fontSize: 20,
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: "確認コード",
-                            labelStyle: TextStyle(
-                              fontSize: 20,
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            child: const Text('確認'),
-                            onPressed: () {
-                              _submitButtonHandler();
-                            },
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
-                  ),
-                ]
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

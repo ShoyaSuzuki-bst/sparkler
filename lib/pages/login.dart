@@ -28,7 +28,7 @@ class _LoginState extends State<Login> {
         print('$e');
       },
       codeSent: (String verificationId, int? resendToken) {
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).push(
           MaterialPageRoute(builder: (context) {
             return InputVerifyCode(
               verifyId: verificationId,
