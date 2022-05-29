@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:sparkler/models/user.dart';
 
@@ -19,7 +18,6 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  final _storage = const FlutterSecureStorage();
 
   void _logout(context) async {
     widget.currentUser.logout();
@@ -73,12 +71,12 @@ class _UserPageState extends State<UserPage> {
           TextButton(
             child: const Text('ログアウト'),
             onPressed: () async {
-              widget.currentUser.logout();
-              await Navigator.of(context).push(
+              await Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) {
                   return const Login();
                 }),
               );
+              widget.currentUser.logout();
             },
           ),
         ],
