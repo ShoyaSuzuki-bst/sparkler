@@ -72,78 +72,78 @@ class _BasePageState extends State<BasePage> {
           onRefresh: () async {
             refreshHandler();
           },
-          child: ListView.separated(
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) {
-                  return Chat(
-                    topic: _topics[index],
-                    currentUser: widget.currentUser,
+          child: ListView.builder(
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) {
+                      return Chat(
+                        topic: _topics[index],
+                        currentUser: widget.currentUser,
+                      );
+                    }),
                   );
-                }),
-              );
-            },
-            child: Card(
-              child: Column(
-                children: <Widget> [
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: FractionalOffset.topCenter,
-                        end: FractionalOffset.bottomCenter,
-                        colors: [
-                          const Color(0x006a11cb).withOpacity(0.6),
-                          const Color(0x002575fc).withOpacity(0.6),
-                        ],
-                        stops: const [
-                          0.0,
-                          1.0,
-                        ],
-                      ),
-                    ),
-                    width: double.infinity,
-                    height: 150,
-                    child: FittedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 5, right: 5),
-                        child: Text(
-                          _topics[index].title,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Card(
+                    child: Column(
+                      children: <Widget> [
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: FractionalOffset.centerRight,
+                              end: FractionalOffset.centerLeft,
+                              colors: [
+                                const Color(0x006f86d6).withOpacity(1),
+                                const Color(0x0048c6ef).withOpacity(1),
+                              ],
+                              stops: const [
+                                0.0,
+                                1.0,
+                              ],
+                            ),
+                          ),
+                          width: double.infinity,
+                          height: 150,
+                          child: FittedBox(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5, right: 5),
+                              child: Text(
+                                _topics[index].title,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget> [
-                        Text(
-                          'あと${_topics[index].createdAt.add(const Duration(days: 1)).difference(DateTime.now()).inHours}時間',
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          '作成者：${_topics[index].user.name}',
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget> [
+                              Text(
+                                'あと${_topics[index].createdAt.add(const Duration(days: 1)).difference(DateTime.now()).inHours}時間',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                '作成者：${_topics[index].user.name}',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const Divider(height: 0.5);
-        },
-        itemCount: _topics.length,
-      ),
+                  ),
+                ),
+              );
+            },
+            itemCount: _topics.length,
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
