@@ -8,7 +8,7 @@ import 'package:sparkler/parts/adaptive_banner.dart';
 
 import 'chat.dart';
 import 'create_topic.dart';
-import 'user_page.dart';
+import 'profile.dart';
 
 class BasePage extends StatefulWidget {
   BasePage({

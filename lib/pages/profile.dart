@@ -42,7 +42,7 @@ class _UserPageState extends State<UserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ユーザーページ'),
+        title: const Text('プロフィール'),
         foregroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.grey.shade700 : null,
         backgroundColor: MediaQuery.platformBrightnessOf(context) == Brightness.light ? Colors.white : null,
         elevation: 0,
@@ -69,7 +69,12 @@ class _UserPageState extends State<UserPage> {
             subtitle: Text(widget.currentUser.phoneNumber),
           ),
           TextButton(
-            child: const Text('ログアウト'),
+            child: const Text(
+              'ログアウト',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
             onPressed: () async {
               await Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) {

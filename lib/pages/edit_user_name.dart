@@ -17,14 +17,14 @@ class EditUserName extends StatefulWidget {
 }
 
 class _EditUserNameState extends State<EditUserName> {
-  final TextEditingController _nameController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
   bool _isValid = false;
   String _counterText = '0/15';
 
   @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    _nameController.text = widget.currentUser.name;
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.currentUser.name);
     final length = _nameController.text.length;
     setState(() {
       _counterText = '$length/15';
