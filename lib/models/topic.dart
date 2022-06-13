@@ -99,4 +99,8 @@ class Topic {
       ),
     );
   }
+
+  void archives() async {
+    await store.collection('topics').doc(id).update({'isActive': false});
+  }
 }

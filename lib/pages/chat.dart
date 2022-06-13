@@ -7,15 +7,19 @@ import 'package:sparkler/models/message.dart';
 import 'package:sparkler/models/topic.dart';
 import 'package:sparkler/models/user.dart' as um;
 
+import 'base_page.dart';
+
 class Chat extends StatefulWidget {
   Chat({
     Key? key,
     required this.topic,
     required this.currentUser,
+    // required this.fetchTopics,
   }) : super(key: key);
 
   final Topic topic;
   final um.User currentUser;
+  // final Function fetchTopics;
 
   @override
   State<Chat> createState() => _ChatState();
@@ -90,6 +94,34 @@ class _ChatState extends State<Chat> {
     _controller.clear();
   }
 
+  // void _archivesButtonHandler(_context) {
+  //   showDialog(
+  //     context: _context,
+  //     builder: (_context) {
+  //       return AlertDialog(
+  //         content: const Text("トピックをアーカイブします。よろしいですか？\n\n(アーカイブされたトピックはメッセージを送信することができなくなります。)"),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: const Text("Cancel"),
+  //             onPressed: () {
+  //               Navigator.pop(_context);
+  //             },
+  //           ),
+  //           TextButton(
+  //             child: const Text("OK"),
+  //             onPressed: () async {
+  //               widget.topic.archives();
+  //               widget.fetchTopics();
+  //               Navigator.pop(context);
+  //               Navigator.pop(context);
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -112,6 +144,32 @@ class _ChatState extends State<Chat> {
             ),
             preferredSize: const Size.fromHeight(5)
           ),
+          // actions: <Widget>[
+          //   PopupMenuButton<int>(
+          //     icon: const Icon(Icons.more_vert),
+          //     onSelected: (v) {
+          //       switch (v) {
+          //         case 0:
+          //           return _archivesButtonHandler(context);
+          //         default:
+          //           throw UnimplementedError();
+          //       }
+          //     },
+          //     itemBuilder: (context) {
+          //       return [
+          //         const PopupMenuItem(
+          //           child: Text(
+          //             'アーカイブする',
+          //             style: TextStyle(
+          //               color: Colors.red,
+          //             ),
+          //           ),
+          //           value: 0,
+          //         ),
+          //       ];
+          //     }
+          //   ),
+          // ],
         ),
         body: SafeArea(
           child: Column(

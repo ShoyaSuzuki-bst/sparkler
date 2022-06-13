@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 
 import 'input_verify_code.dart';
 
@@ -15,17 +16,24 @@ class _LoginState extends State<Login> {
   final _internationalNumber = TextEditingController(text: '+81');
   final String smsCode = '';
   String verificationId = '';
+  String _errorMessage = '';
 
   void _submitButtonHandler(BuildContext context) async {
-    print('${_internationalNumber.text}${_phoneNumberValueController.text}');
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: '${_internationalNumber.text}${_phoneNumberValueController.text}',
       verificationCompleted: (PhoneAuthCredential credential) {
         print('verificationCompleted called');
       },
       verificationFailed: (FirebaseAuthException e) {
-        print('verificationFailed');
-        print('$e');
+        String errorMessage = '';
+        if (e.code == 'invalid-phone-number'){
+          errorMessage = '電話番号が正しくありません';
+        } else {
+          errorMessage = '正常にログインできませんでした';
+        }
+        setState(() {
+          _errorMessage = errorMessage;
+        });
       },
       codeSent: (String verificationId, int? resendToken) {
         Navigator.of(context).push(
@@ -120,7 +128,16 @@ class _LoginState extends State<Login> {
                           ],
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 30,
+                        ),
+                        Text(
+                          _errorMessage,
+                          style: const TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
                         ),
                         SizedBox(
                           width: double.infinity,
@@ -130,9 +147,6 @@ class _LoginState extends State<Login> {
                               _submitButtonHandler(context);
                             },
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
                         ),
                       ],
                     ),

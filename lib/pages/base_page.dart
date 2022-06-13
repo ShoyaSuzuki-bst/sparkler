@@ -84,6 +84,7 @@ class _BasePageState extends State<BasePage> {
                       return Chat(
                         topic: _topics[index],
                         currentUser: widget.currentUser,
+                        // fetchTopics: refreshHandler,
                       );
                     }),
                   );
